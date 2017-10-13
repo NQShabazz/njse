@@ -19,7 +19,8 @@ nJSE.entities.default = function () {
   let id = nJSE.entities.entity();
 
   nJSE.components.sprites.create(id);
-  nJSE.components.physics.create(id);
+  nJSE.components.collider.create(id);
+  nJSE.components.collider.setShape(nJSE.components.collider.entityIDs.length - 1, 25, 10);
 
   return id;
 };

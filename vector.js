@@ -1,5 +1,6 @@
 'use strict';
 
+//Nazaire's JavaScript Engine
 class Vector {
   constructor(x, y) {
     this[0] = x;

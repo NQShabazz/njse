@@ -34,21 +34,17 @@ nJSE.main = {
 
     nJSE.input.update();
 
-    nJSE.components.update(this.deltaTime);
-
-    nJSE.renderer.update(this.deltaTime);
-
     //Quick test start
     nJSE.components.transform.bufferPositions[0].add(nJSE.input.mousePosition.minus(nJSE.components.transform.positions[0]));
 
     if (nJSE.input.mousePressed[1]) {
       if (this.noParent) {
         nJSE.components.heirarchy.parentByIndex(1, 0);
-        nJSE.components.physics.debugColor = "#ff0";
+        nJSE.components.collider.debugColor = "#ff0";
         this.noParent = false;
       } else {
         nJSE.components.heirarchy.unparentByIndex(1);
-        nJSE.components.physics.debugColor = "#0f0";
+        nJSE.components.collider.debugColor = "#0f0";
         this.noParent = true;
       }
     }
@@ -74,6 +70,10 @@ nJSE.main = {
       nJSE.components.transform.bufferScales[0].add((Vector.one).scaleBy(5 * this.deltaTime));
 
     nJSE.components.transform.bufferRotations[1] += this.deltaTime * 2.5;
+
+    nJSE.components.update(this.deltaTime);
+
+    nJSE.renderer.update(this.deltaTime);
 
     // Quick test end
 
