@@ -1,38 +1,38 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>JS Game Engine</title>
-        
-        <style>
-            *{padding: 0; margin: 0; font-family: Arial, sans-serif; user-select: none;}
-            
-            #canvasContainer{width: 800px; height: 600px; margin: auto; margin-top: 50px; position: relative; background: #444;}
-            #canvasContainer > *{position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: crosshair;}
-            
-            #elementContainer{z-index: 100;}
-            #elementContainer #fpsDisplay{text-align: right; padding: 10px; color: #fff;}
-        </style>
-        
-        <script src="vector.js"></script>
-        
-        <script src="assets.js"></script>
-        
-        <script src="input.js"></script>
-        
-        <script src="renderer.js"></script>
-        
-        <script src="components.js"></script>
-        <script src="components-default.js"></script>
-        <script src="components-sprites.js"></script>
-        <script src="components-collider.js"></script>
-        
-        <script src="entities.js"></script>
-        
-        <script src="main.js"></script>
-    </head>
-    <body>
-        <div id="canvasContainer">
-            <div id="elementContainer"></div>
-        </div>
-    </body>
+  <head>
+    <title>JS Game Engine</title>
+
+    <style>
+      *{padding: 0; margin: 0; font-family: Arial, sans-serif; user-select: none;}
+
+      #canvasContainer{width: 800px; height: 600px; margin: auto; margin-top: 50px; position: relative; background: #444;}
+      #canvasContainer > *{position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: crosshair;}
+
+      #elementContainer{z-index: 100;}
+      #elementContainer #fpsDisplay{text-align: right; padding: 10px; color: #fff;}
+    </style>
+
+    <script src="vector.js"></script>
+
+    <script src="assets.js"></script>
+
+    <script src="input.js"></script>
+
+    <script src="renderer.js"></script>
+
+    <script src="components.js"></script>
+    <script src="components-default.js"></script>
+    <script src="components-sprites.js"></script>
+    <script src="components-collider.js"></script>
+
+    <script src="entities.js"></script>
+
+    <script src="main.js"></script>
+  </head>
+  <body>
+    <div id="canvasContainer">
+      <div id="elementContainer"></div>
+    </div>
+  </body>
 </html>
