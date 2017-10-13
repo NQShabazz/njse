@@ -20,7 +20,7 @@ nJSE.entities.default = function () {
 
   nJSE.components.sprites.create(id);
   nJSE.components.collider.create(id);
-  nJSE.components.collider.setShape(nJSE.components.collider.entityIDs.length - 1, 25, 10);
+  nJSE.components.collider.setShape(nJSE.components.collider.entityIDs.length - 1, 35, 4, Math.PI / 4);
 
   return id;
 };

@@ -10,6 +10,7 @@ nJSE.components.collider.onInit = function () {
   this.colliderDepthsAndRadii = [];
   this.collisions0 = [];
   this.collisions1 = [];
+  this.angleOffset = [];
   this.transformIndices = [];
   this.debugCanvasCtx = nJSE.renderer.createCanvas("colliderDebugCanvas", 90).getContext("2d");
 };
@@ -28,7 +29,7 @@ nJSE.components.collider.onCreate = function (id) {
 
   this.transformIndices[index] = nJSE.components.transform.indexOf(id, true);
 };
-nJSE.components.collider.setShape = function (index, radius, numSides) {
+nJSE.components.collider.setShape = function (index, radius, numSides, angleOffset) {
   this.colliderPoints[index] = new Array(numSides);
   this.colliderPDescs[index] = new Array(numSides);
 
@@ -37,8 +38,8 @@ nJSE.components.collider.setShape = function (index, radius, numSides) {
   while (i--) {
     let angle = this.twoPI * i / numSides;
 
-    this.colliderPoints[index][i] = new Vector(radius * Math.cos(this.twoPI * i / numSides), radius * Math.sin(this.twoPI * i / numSides));
-    this.colliderPDescs[index][i] = new Vector(radius * radius, angle);
+    this.colliderPoints[index][i] = new Vector(radius * Math.cos(angleOffset + this.twoPI * i / numSides), radius * Math.sin(angleOffset + this.twoPI * i / numSides));
+    this.colliderPDescs[index][i] = new Vector(radius * radius, angleOffset + angle);
   }
 
   this.colliderDepthsAndRadii[index][1] = (radius);
