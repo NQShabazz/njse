@@ -69,7 +69,7 @@ nJSE.main = {
     if (nJSE.input.keyDown[nJSE.input.keys.up])
       nJSE.components.transform.bufferScales[0].add((Vector.one).scaleBy(5 * this.deltaTime));
 
-    nJSE.components.transform.bufferRotations[1] += this.deltaTime * 2.5;
+    //nJSE.components.transform.bufferRotations[1] += this.deltaTime * 2.5;
 
     nJSE.components.update(this.deltaTime);
 

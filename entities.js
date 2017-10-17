@@ -6,7 +6,7 @@ var nJSE = nJSE || {};
 nJSE.entities = nJSE.entities || {};
 
 nJSE.entities.entity = function () {
-  let id = +(Date.now() + "" + ((Math.random() * 1000) | 0));
+  let id = +("" + Date.now() + ((Math.random() * 1000) | 0));
 
   nJSE.components.tags.create(id);
   nJSE.components.heirarchy.create(id);

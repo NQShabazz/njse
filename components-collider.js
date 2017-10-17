@@ -10,6 +10,7 @@ nJSE.components.collider.onInit = function () {
   this.colliderDepthsAndRadii = [];
   this.collisions0 = [];
   this.collisions1 = [];
+  this.collisionPoints = [];
   this.angleOffset = [];
   this.transformIndices = [];
   this.debugCanvasCtx = nJSE.renderer.createCanvas("colliderDebugCanvas", 90).getContext("2d");
@@ -22,10 +23,12 @@ nJSE.components.collider.onCreate = function (id) {
   // length squared, angle of each point
   this.colliderPDescs[index] = [new Vector(1, 0)];
   // how far to check for collision (circle vs. precise), maximum radius
-  this.colliderDepthsAndRadii[index] = new Vector(0, 1);
+  this.colliderDepthsAndRadii[index] = new Vector(1, 1);
 
   this.collisions0[index] = [];
   this.collisions1[index] = [];
+  
+  this.collisionPoints[index] = [];
 
   this.transformIndices[index] = nJSE.components.transform.indexOf(id, true);
 };
@@ -43,6 +46,8 @@ nJSE.components.collider.setShape = function (index, radius, numSides, angleOffs
   }
 
   this.colliderDepthsAndRadii[index][1] = (radius);
+    
+    console.log(this.colliderPDescs[index]);
 };
 nJSE.components.collider.setPoints = function (index, pointArray) {
   this.colliderPoints[index] = pointArray;
@@ -66,16 +71,19 @@ nJSE.components.collider.onUpdate = function (deltaTime) {
   var i = this.entityIDs.length;
 
   while (i--) {
-    while (this.collisions0[i].length > 0)
+    while (this.collisions0[i].length)
       this.collisions0[i].pop();
-    while (this.collisions1[i].length > 0)
+    while (this.collisions1[i].length)
       this.collisions1[i].pop();
+    while (this.collisionPoints[i].length)
+      this.collisionPoints[i].pop();
   }
 
   i = this.entityIDs.length;
 
   while (i--) {
     let iPosition = nJSE.components.transform.positions[this.transformIndices[i]];
+    let iRotation = nJSE.components.transform.rotations[this.transformIndices[i]];
     var j = i;
 
     while (j-- > 0) {
@@ -83,18 +91,17 @@ nJSE.components.collider.onUpdate = function (deltaTime) {
       let iScale = nJSE.components.transform.scales[this.transformIndices[i]];
       let jScale = nJSE.components.transform.scales[this.transformIndices[j]];
       let distSquared = jPosition.minus(iPosition).lengthSquared;
+      let angle = jPosition.minus(iPosition).angle;
 
       if (distSquared < Math.pow(this.colliderDepthsAndRadii[i][1] * Math.max(iScale.x, iScale.y) +
           this.colliderDepthsAndRadii[j][1] * Math.max(jScale.x, jScale.y), 2)) {
-        this.collisions0[i].push(j);
-        this.collisions0[j].push(i);
-
-        if (this.colliderDepthsAndRadii[i].x == 1 && this.colliderDepthsAndRadii[j].x == 1 &&
-          /*indepth stuff*/
-          true) {
-          this.collisions1[i].push(j);
-          this.collisions1[j].push(i);
-        }
+        this.collisions0[i].push([this.entityIDs[j], angle]);
+        this.collisions0[j].push([this.entityIDs[i], angle + Math.PI]);
+        
+        //if(this.colliderDephsAndRadii[i][0] || this.colliderDepthsAndRadii[j][0])
+        //  do in-depth collision test (something more precise and gives collision depth)...
+        //this.collisions1[i].push([this.entityIDs[j], angle, collisionDepth])
+        //this.collisions1[j].push([this.entityIDs[i], angle, collisionDepth])
       }
     }
   }
@@ -109,6 +116,7 @@ nJSE.components.collider.onDraw = function () {
       let pos = nJSE.components.transform.positions[this.transformIndices[i]];
       let rotation = nJSE.components.transform.rotations[this.transformIndices[i]];
       let scale = nJSE.components.transform.scales[this.transformIndices[i]];
+      
       var j = this.colliderPoints[i].length;
 
       let endPoint = this.colliderPoints[i][j - 1];
@@ -124,19 +132,9 @@ nJSE.components.collider.onDraw = function () {
 
       while (j--)
         this.debugCanvasCtx.lineTo(this.colliderPoints[i][j].x, this.colliderPoints[i][j].y);
-
+      
       this.debugCanvasCtx.lineTo(endPoint.x, endPoint.y);
       this.debugCanvasCtx.stroke();
     }
   }
-};
-// DO CIRCLE2CIRCLE ONLY FIRST, THEN DO AABB ONLY, THEN ALLOW FOR MIXTURE
-nJSE.components.collider.circle2Circle = function (indexA, indexB) {
-
-};
-nJSE.components.collider.AABB2AABB = function (indexA, indexB) {
-
-};
-nJSE.components.collider.circle2AABB = function (indexA, indexB) {
-
 };

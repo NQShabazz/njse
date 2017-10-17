@@ -46,6 +46,13 @@ class Vector {
 
     return this;
   }
+  
+  //Rotates this vector by the given value (radians)
+  rotate(angle){
+    this.setTo(this.x * Math.cos(angle) - this.y * Math.sin(angle), this.x * Math.sin(angle) + this.y * Math.cos(angle));
+    
+    return this;
+  }
 
   // --- RETURNS NEW OBJECTS ---
 
@@ -86,6 +93,8 @@ class Vector {
       this[0] = x.x;
       this[1] = x.y;
     }
+    
+    return this;
   }
 
   // --- PRIVATE GETTERS ---
@@ -122,6 +131,11 @@ class Vector {
   //Returns the length of this vector. Slow.
   get length() {
     return Math.pow(this.lengthSquared, 0.5);
+  }
+  
+  //Returns the angle of the vector, in radians
+  get angle(){
+    return Math.atan2(this.y, this.x);
   }
 
   //Returns the unit vector of this vector. Slow.
