@@ -20,6 +20,7 @@ nJSE.renderer = {
     this.fpsDisplay.classList.add("debug");
     this.fpsDisplay.id = 'fpsDisplay';
     this.fpsDisplay.innerText = "FPS | 60";
+    this.elementContainer.append(this.fpsDisplay);
   },
   getCanvasById: function (id) {
     let canvas = document.getElementById(id);
@@ -79,7 +80,7 @@ nJSE.renderer = {
   update: function (deltaTime) {
     if (nJSE.drawDebug) {
       this.updateTimer -= deltaTime;
-
+      
       if (this.updateTimer < 0) {
         this.fpsDisplay.innerText = "FPS | " + Math.round(1 / deltaTime);
 

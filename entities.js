@@ -25,7 +25,8 @@ nJSE.entities.default = function () {
   
   let soundComponentIndex = nJSE.components.audio.entityIDs.length - 1;
   
-  nJSE.components.audio.setAudio(soundComponentIndex, 0, 3, 0.5, 1);
+  nJSE.components.audio.setAudio(soundComponentIndex, 0, 1, 0.5, 1);
+  nJSE.components.audio.setAudio(soundComponentIndex, 2, 10, 0.25, 0);
 
   return id;
 };

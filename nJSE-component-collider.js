@@ -101,27 +101,24 @@ nJSE.components.collider.onUpdate = function (deltaTime) {
           iScale = nJSE.components.transform.scales[this.transformIndices[i]],
           jScale = nJSE.components.transform.scales[this.transformIndices[j]],
           iRadius = this.colliderDepthsAndRadii[i][1], jRadius = this.colliderDepthsAndRadii[j][1],
-          iRect = [iPosition.x - 0.707 * iRadius * iScale.x, iPosition.y + 0.707 * iRadius * iScale.y, 0.707 * 2 * iRadius * iScale.x, 0.707 * 2 * iRadius * iScale.y],
-          jRect = [jPosition.x - 0.707 * jRadius * jScale.x, jPosition.y + 0.707 * jRadius * jScale.y, 0.707 * 2 * jRadius * jScale.x, 0.707 * 2 * jRadius * jScale.y],
+          iRect = [iPosition.x - 0.707 * iRadius * iScale.x, iPosition.y + 0.707106781 * iRadius * iScale.y, 0.707 * 2 * iRadius * iScale.x, 0.707 * 2 * iRadius * iScale.y],
+          jRect = [jPosition.x - 0.707 * jRadius * jScale.x, jPosition.y + 0.707106781 * jRadius * jScale.y, 0.707 * 2 * jRadius * jScale.x, 0.707 * 2 * jRadius * jScale.y],
           distSquared = jPosition.minus(iPosition).lengthSquared,
           angle = jPosition.minus(iPosition).angle,
           collisionDetected = false;
 
-      if(i == 1)
       if ((this.collidingAsCircle[i] && this.collidingAsCircle[j] && distSquared < Math.pow(iRadius * Math.max(iScale.x, iScale.y) + jRadius * Math.max(jScale.x, jScale.y), 2)) || ((!(this.collidingAsCircle[i] && this.collidingAsCircle[j])) && iRect[0] < jRect[0] + jRect[2] && iRect[0] + iRect[2] > jRect[0] && iRect[1] < jRect[1] + jRect[3] && iRect[3] + iRect[1] > jRect[1])){
         this.collisions0[i].push([this.entityIDs[j], angle]);
         this.collisions0[j].push([this.entityIDs[i], (angle + Math.PI)%(this.twoPI)]);
         
-        if(i === 1)
-          console.log(iRect, jRect);
-        
         collisionDetected = true;
       }
       
-      //if(collisionDetected && this.colliderDephsAndRadii[i][0] || this.colliderDepthsAndRadii[j][0])
-      //  do in-depth collision test (something more precise and gives collision depth)...
-      //this.collisions1[i].push([this.entityIDs[j], angle, collisionDepth])
-      //this.collisions1[j].push([this.entityIDs[i], angle, collisionDepth])
+      if(collisionDetected && (this.colliderDepthsAndRadii[i][0] || this.colliderDepthsAndRadii[j][0])){
+        //do in-depth collision test (something more precise that gives collision depth)...
+        //this.collisions1[i].push([this.entityIDs[j], angle, collisionDepth])
+        //this.collisions1[j].push([this.entityIDs[i], angle, collisionDepth])
+      }
     }
   }
 };

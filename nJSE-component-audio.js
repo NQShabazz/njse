@@ -25,7 +25,7 @@ nJSE.components.audio.setAudio = function(index, nodeIndex, numInstances, volume
   var i = this.audios[index].length;
   
   while(i--)
-    if(this.audios[index][i][0].src === this.audioSources[srcIndex])
+    if(this.audios[index][i][0].src === this.audioNodes[nodeIndex].src)
       return i;
   
   i = numInstances || 1;

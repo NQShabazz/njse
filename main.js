@@ -60,6 +60,11 @@ nJSE.main = {
       }
     }
     
+    if(nJSE.input.mousePressed[0] || nJSE.input.mousePressed[2]){
+      nJSE.components.audio.playAudio(2, 1);
+      nJSE.components.transform.bufferScales[0].add((Vector.one).scaleBy(0.2));
+    }
+    
     if (nJSE.input.mouseDown[0])
       nJSE.components.transform.bufferRotations[0] -= this.deltaTime * 5;
     if (nJSE.input.mouseDown[2])
