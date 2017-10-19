@@ -18,9 +18,14 @@ nJSE.entities.entity = function () {
 nJSE.entities.default = function () {
   let id = nJSE.entities.entity();
 
-  nJSE.components.sprites.create(id);
+  nJSE.components.sprite.create(id);
   nJSE.components.collider.create(id);
   nJSE.components.collider.setShape(nJSE.components.collider.entityIDs.length - 1, 35, 4, Math.PI / 4);
+  nJSE.components.audio.create(id);
+  
+  let soundComponentIndex = nJSE.components.audio.entityIDs.length - 1;
+  
+  nJSE.components.audio.setAudio(soundComponentIndex, 0, 3, 0.5, 1);
 
   return id;
 };

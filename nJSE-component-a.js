@@ -10,53 +10,40 @@ nJSE.components.array = [];
 nJSE.components.base = function () {
   let component = {
     entityIDs: [],
-    active: [],
-    changedIDs: [],
-    clearedChanged: true,
+    activeStates: [],
     create: function (id) {
       if (this.indexOf(id) === -1) {
         this.entityIDs.push(id);
-        this.active.push(true);
+        this.activeStates.push(1);
         this.onCreate(id);
+      }
+      
+      return this.entityIDs.length;
+    },
+    delete: function(id){
+      let index = this.indexOf(id);
+      
+      if (index !== -1) {
+        this.activeStates[index] = 0;
+        this.onDelete(index);
       }
     },
     init: function () {
       this.heirarchalFunction = this.heirarchalFunction.bind(this);
       this.onInit();
     },
-    earlyUpdate: function (deltaTime) {
-      if (this.active) {
-        this.onEarlyUpdate(deltaTime);
-      }
-    },
-    update: function (deltaTime) {
-      if (this.active) {
-        this.onUpdate(deltaTime);
-      }
-    },
-    lateUpdate: function (deltaTime) {
-      if (this.active) {
-        this.onLateUpdate(deltaTime);
-      }
-    },
-    draw: function () {
-      if (this.active)
-        this.onDraw();
-    },
     onInit: function () {},
     onCreate: function (id) {},
+    onDelete: function (index) {},
     onEarlyUpdate: function (deltaTime) {},
     onUpdate: function (deltaTime) {},
     onLateUpdate: function (deltaTime) {},
     onDraw: function () {},
     heirarchalFunction: function (index, parentID) {},
     indexOf: function (id, required) {
-      if (id === undefined)
-        return -1;
-
       let index = this.entityIDs.indexOf(id);
 
-      if (index < 0 && required) {
+      if (required && index < 0) {
         this.create(id);
         return this.entityIDs.length - 1;
       }
@@ -68,6 +55,13 @@ nJSE.components.base = function () {
   nJSE.components.array.push(component);
 
   return component;
+};
+
+nJSE.components.delete = function (id) {
+  var i = this.array.length;
+
+  while (i--)
+    this.array[i].delete(id);
 };
 
 nJSE.components.init = function () {
@@ -83,18 +77,18 @@ nJSE.components.update = function (deltaTime) {
     k = j;
 
   while (i--)
-    this.array[i].earlyUpdate(deltaTime);
+    this.array[i].onEarlyUpdate(deltaTime);
 
   while (j--)
-    this.array[j].update(deltaTime);
+    this.array[j].onUpdate(deltaTime);
 
   while (k--)
-    this.array[k].lateUpdate(deltaTime);
+    this.array[k].onLateUpdate(deltaTime);
 };
 
 nJSE.components.draw = function () {
   var i = this.array.length;
 
   while (i--)
-    this.array[i].draw();
+    this.array[i].onDraw();
 };

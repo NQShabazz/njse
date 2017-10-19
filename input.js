@@ -31,21 +31,21 @@ nJSE.input = {
   mouseTarget: document,
   //when initialized, this will add hooks to capture mouse events
   init: function (mouseTarget) {
-    //set up the key bindings to false (not pressed / down)
+    //set up the key bindings to 0 (not pressed / down)
     // learned of "hasOwnProperty" from Dominik of StackOverflow
     for (let i in this.keys)
       if (this.keys.hasOwnProperty(i)) {
-        this.keyPressed[this.keys[i]] = false;
-        this.keyPressedBuffer[this.keys[i]] = false;
-        this.keyDown[this.keys[i]] = false;
+        this.keyPressed[this.keys[i]] = 0;
+        this.keyPressedBuffer[this.keys[i]] = 0;
+        this.keyDown[this.keys[i]] = 0;
       }
 
-    //set up the mouse binding to false (not pressed / down)
+    //set up the mouse binding to 0 (not pressed / down)
     for (let i in this.buttons)
       if (this.buttons.hasOwnProperty(i)) {
-        this.mousePressed[this.buttons[i]] = false;
-        this.mousePressedBuffer[this.buttons[i]] = false;
-        this.mouseDown[this.buttons[i]] = false;
+        this.mousePressed[this.buttons[i]] = 0;
+        this.mousePressedBuffer[this.buttons[i]] = 0;
+        this.mouseDown[this.buttons[i]] = 0;
       }
 
     this.mouseTarget = mouseTarget;
@@ -57,18 +57,18 @@ nJSE.input = {
 
     //if the mouse is not already down, then the mouse was just pressed
     document.addEventListener("mousedown", (e) => {
-      if (this.mouseDown[e.button] != true) {
-        this.mousePressed[e.button] = true;
-        this.mousePressedBuffer[e.button] = true;
+      if (this.mouseDown[e.button] != 1) {
+        this.mousePressed[e.button] = 1;
+        this.mousePressedBuffer[e.button] = 1;
       }
-      this.mouseDown[e.button] = true;
+      this.mouseDown[e.button] = 1;
     });
 
-    //the mouse was released, everything about it is false 0_0
+    //the mouse was released, everything about it is 0 0_0
     document.addEventListener("mouseup", (e) => {
-      this.mousePressed[e.button] = false;
-      this.mousePressedBuffer[e.button] = false;
-      this.mouseDown[e.button] = false;
+      this.mousePressed[e.button] = 0;
+      this.mousePressedBuffer[e.button] = 0;
+      this.mouseDown[e.button] = 0;
     });
 
     //this will keep the right click menu from popping up
@@ -78,31 +78,31 @@ nJSE.input = {
 
     //similar to mouseevent code:
     window.addEventListener("keypress", (e) => {
-      if (this.keyDown[e.code] != true) {
-        this.keyPressed[e.code] = true;
-        this.keyPressedBuffer[e.code] = true;
+      if (this.keyDown[e.code] != 1) {
+        this.keyPressed[e.code] = 1;
+        this.keyPressedBuffer[e.code] = 1;
       }
-      this.keyDown[e.code] = true;
+      this.keyDown[e.code] = 1;
     });
 
     //similar to mouseevent code:
     window.addEventListener("keyup", (e) => {
-      this.keyPressed[e.code] = false;
-      this.keyPressedBuffer[e.code] = false;
-      this.keyDown[e.code] = false;
+      this.keyPressed[e.code] = 0;
+      this.keyPressedBuffer[e.code] = 0;
+      this.keyDown[e.code] = 0;
     });
   },
-  //update just checks the pressedBuffers, the nsets then to false
-  //if the buffers are already false, then it sets the actual pressed events to false
+  //update just checks the pressedBuffers, the nsets then to 0
+  //if the buffers are already 0, then it sets the actual pressed events to 0
   update: function () {
     for (let i in this.keys)
       if (this.keys.hasOwnProperty(i)) {
         let keyIndex = this.keys[i];
 
         if (this.keyPressedBuffer[keyIndex])
-          this.keyPressedBuffer[keyIndex] = false;
+          this.keyPressedBuffer[keyIndex] = 0;
         else if (this.keyPressed[keyIndex])
-          this.keyPressed[keyIndex] = false;
+          this.keyPressed[keyIndex] = 0;
       }
 
     for (let i in this.buttons)
@@ -110,9 +110,9 @@ nJSE.input = {
         let buttonIndex = this.buttons[i];
 
         if (this.mousePressedBuffer[buttonIndex])
-          this.mousePressedBuffer[buttonIndex] = false;
+          this.mousePressedBuffer[buttonIndex] = 0;
         else if (this.mousePressed[buttonIndex])
-          this.mousePressed[buttonIndex] = false;
+          this.mousePressed[buttonIndex] = 0;
       }
   }
 };

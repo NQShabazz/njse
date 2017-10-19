@@ -6,7 +6,7 @@ var nJSE = nJSE || {};
 nJSE.WIDTH = nJSE.WIDTH || 800;
 nJSE.HEIGHT = nJSE.HEIGHT || 600;
 
-nJSE.drawDebug = true;
+nJSE.drawDebug = 1;
 
 nJSE.renderer = {
   canvases: [],
@@ -14,9 +14,12 @@ nJSE.renderer = {
   canvasCount: 0,
   updateTimer: 0,
   init: function () {
-    this.mainCanvasCtx = this.createCanvas("mainCanvas", 99, true).getContext("2d");
+    this.mainCanvasCtx = this.createCanvas("mainCanvas", 99, 1).getContext("2d");
     this.elementContainer = document.getElementById("elementContainer")
-    this.fpsDisplay = this.createElement('h2', "fpsDisplay", true);
+    this.fpsDisplay = document.createElement('h2');
+    this.fpsDisplay.classList.add("debug");
+    this.fpsDisplay.id = 'fpsDisplay';
+    this.fpsDisplay.innerText = "FPS | 60";
   },
   getCanvasById: function (id) {
     let canvas = document.getElementById(id);
@@ -72,25 +75,6 @@ nJSE.renderer = {
     this.canvasCount++;
 
     return this.canvases[index];
-  },
-  createElement: function (tag, id, classes) {
-    let elem = document.createElement(tag);
-
-    elem.id = id;
-    elem.innerText = "FPS | 60";
-
-    if (classes) {
-      if (Array.isArray(classes))
-        elem.classList.add(...classes);
-      else if (classes === true)
-        elem.classList.add("debug");
-      else
-        elem.classList.add(classes);
-    }
-
-    this.elementContainer.appendChild(elem);
-
-    return elem;
   },
   update: function (deltaTime) {
     if (nJSE.drawDebug) {

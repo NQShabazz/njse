@@ -15,6 +15,12 @@ nJSE.components.heirarchy.onCreate = function (id) {
   this.parents[index] = null;
   this.children[index] = [];
 };
+nJSE.components.heirarchy.onDelete = function (index) {
+  var i = this.children[index].length;
+  
+  while(i--)
+    this.unparentByIndex(this.children[index][i]);
+};
 nJSE.components.heirarchy.parentByID = function (childID, parentID) {
   let parentIndex = this.indexOf(parentID),
     childIndex = this.indexOf(childID);
@@ -51,7 +57,7 @@ nJSE.components.heirarchy.setParent = function (childIndex, parentIndex) {
 
   if (parentIndex !== undefined) {
     if (this.children[parentIndex].indexOf(childIndex) === -1)
-      this.children[parentIndex][this.children[parentIndex].length] = childIndex;
+      this.children[parentIndex].push(childIndex);
 
     this.setRank(childIndex, this.ranks[parentIndex] + 1);
   } else
@@ -81,8 +87,6 @@ nJSE.components.heirarchy.orderedIteration = function (heirarchyIndexArray, heir
 
         if (rank > highestRank)
           highestRank = rank;
-
-
 
         if (rank === currentRank)
           heirarchalFunction(i, this.entityIDs[this.parents[heirarchyIndexArray[i]]]);
@@ -128,7 +132,7 @@ nJSE.components.transform.onInit = function () {
   this.heirarchyIndices = [];
   this.factorScale = [];
   this.factorRotation = [];
-  this.factorPosition = [];
+  this.factorOffsets = [];
   this.factorPositionOffset = [];
   this.factorScaleOffset = [];
   this.factorRotationOffset = [];
@@ -142,14 +146,14 @@ nJSE.components.transform.onCreate = function (id) {
   this.bufferScales[index] = Vector.zero;
   this.bufferRotations[index] = 0;
   this.bufferPositions[index] = Vector.zero;
-  this.heirarchyIndices[index] = nJSE.components.heirarchy.indexOf(id, true);
+  this.heirarchyIndices[index] = nJSE.components.heirarchy.indexOf(id, 1);
 
-  this.factorScale[index] = true;
-  this.factorRotation[index] = true
-  this.factorPosition[index] = true
-  this.factorPositionOffset[index] = true
-  this.factorScaleOffset[index] = true
-  this.factorRotationOffset[index] = true
+  this.factorScale[index] = 1;
+  this.factorRotation[index] = 1;
+  this.factorOffsets[index] = 1;
+  this.factorPositionOffset[index] = 1;
+  this.factorScaleOffset[index] = 1;
+  this.factorRotationOffset[index] = 1;
 };
 nJSE.components.transform.onEarlyUpdate = function (deltaTime) {
   nJSE.components.heirarchy.orderedIteration(this.heirarchyIndices, this.heirarchalFunction);
@@ -166,33 +170,24 @@ nJSE.components.transform.heirarchalFunction = function (index, parentID) {
   if (parentID !== null) {
     let parentIndex = this.indexOf(parentID);
 
-    if (parentIndex !== -1) {
-
+    if (parentIndex !== -1 && this.activeStates[parentIndex]) {
+      let vectorToThis = this.positions[index].minus(this.positions[parentIndex]);
+      
       if (this.factorScale[index])
         this.bufferScales[index].add(this.bufferScales[parentIndex]);
 
       if (this.factorRotation)
         this.bufferRotations[index] += this.bufferRotations[parentIndex];
 
-      if (this.factorPosition[index]) {
-        let pos = this.positions[index].copy;
-
+      if (this.factorOffsets[index]) {
         if (this.factorPositionOffset[index])
-          pos.add(this.bufferPositions[parentIndex]);
-
-        pos.subtract(this.positions[parentIndex]);
-
+          this.bufferPositions[index].add(this.bufferPositions[parentIndex]);
+        
+        if (this.factorRotationOffset[index])
+          this.bufferPositions[index].add(vectorToThis.rotatedBy(this.bufferRotations[parentIndex]).subtract(vectorToThis));
+        
         if (this.factorScaleOffset[index])
-          pos.add(pos.times(this.bufferScales[parentIndex]));
-
-        if (this.bufferRotations[parentIndex] !== 0 && this.factorRotationOffset[index]) {
-          let cosTheta = Math.cos(this.bufferRotations[parentIndex]);
-          let sinTheta = Math.sin(this.bufferRotations[parentIndex]);
-
-          pos.setTo(pos.x * cosTheta - pos.y * sinTheta, pos.x * sinTheta + pos.y * cosTheta);
-        }
-
-        this.bufferPositions[index].add(this.positions[parentIndex].plus(pos).subtract(this.positions[index]));
+          this.bufferPositions[index].add(vectorToThis.times(this.bufferScales[parentIndex].x, this.bufferScales[parentIndex].y));
       }
     }
   }

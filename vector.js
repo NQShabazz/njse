@@ -2,10 +2,10 @@
 
 //Nazaire's JavaScript Engine
 class Vector {
-  constructor(x, y) {
+  constructor(x, y, z) {
     this[0] = x;
-    this[1] = y;
-    this[2] = 1;
+    this[1] = y || x;
+    this[2] = z || 1;
   }
 
   // --- MUTATORS ---
@@ -28,7 +28,7 @@ class Vector {
 
   //Scales this vector by x (and y)
   scale(x, y) {
-    if (arguments.length === 2) {
+    if (y !== null) {
       this[0] *= x;
       this[1] *= y;
     } else {
@@ -48,8 +48,8 @@ class Vector {
   }
   
   //Rotates this vector by the given value (radians)
-  rotate(angle){
-    this.setTo(this.x * Math.cos(angle) - this.y * Math.sin(angle), this.x * Math.sin(angle) + this.y * Math.cos(angle));
+  rotate(radians){
+    this.setTo(this.x * Math.cos(radians) - this.y * Math.sin(radians), this.x * Math.sin(radians) + this.y * Math.cos(radians));
     
     return this;
   }
@@ -68,7 +68,7 @@ class Vector {
 
   //Returns the result of scaling this vector
   times(x, y) {
-    if (arguments.length === 2)
+    if (y !== null)
       return new Vector(this.x * x, this.y * y);
     else
       return new Vector(this.x * x.x, this.y * x.y);
@@ -83,10 +83,15 @@ class Vector {
   dot(v) {
     return this.x * v.x + this.y + v.y;
   }
+  
+  //Returns the result of rotating this vector
+  rotatedBy(radians){
+    return new Vector(this.x * Math.cos(radians) - this.y * Math.sin(radians), this.x * Math.sin(radians) + this.y * Math.cos(radians));
+  }
 
   //Sets the values of this vector to the provided x and y
   setTo(x, y) {
-    if (arguments.length === 2) {
+    if (y !== null) {
       this[0] = x;
       this[1] = y;
     } else {
