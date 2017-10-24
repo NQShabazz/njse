@@ -1,6 +1,28 @@
 'use strict';
 
-//it would be best to initialize arrays as new Array(10000000) or so
+//TAG COMPONENT
+nJSE.components.tags = nJSE.components.base();
+nJSE.components.tags.onInit = function (id) {
+  this.strings = [];
+};
+nJSE.components.tags.onCreate = function (id) {
+  this.strings[this.strings.length] = [];
+};
+nJSE.components.tags.addTags = function (index, tagArray) {
+  let length = this.strings[index].length;
+  var i = tagArray.length
+
+  while (i--)
+    this.strings[index][length + i] = tagArray[i];
+};
+nJSE.components.tags.removeTags = function (index, tagArray) {
+  var i = tagArray.length;
+
+  while (i--)
+    while (this.strings[index].indexOf(tagArray[i]) !== -1)
+      this.strings.splice(this.strings[index].indexOf(tagArray[i]), 1);
+};
+
 //HEIRARCHY COMPONENT
 nJSE.components.heirarchy = nJSE.components.base();
 nJSE.components.heirarchy.onInit = function () {
@@ -96,103 +118,3 @@ nJSE.components.heirarchy.orderedIteration = function (heirarchyIndexArray, heir
     currentRank++;
   }
 }
-
-//TAG COMPONENT
-nJSE.components.tags = nJSE.components.base();
-nJSE.components.tags.onInit = function (id) {
-  this.strings = [];
-};
-nJSE.components.tags.onCreate = function (id) {
-  this.strings[this.strings.length] = [];
-};
-nJSE.components.tags.addTags = function (index, tagArray) {
-  let length = this.strings[index].length;
-  var i = tagArray.length
-
-  while (i--)
-    this.strings[index][length + i] = tagArray[i];
-};
-nJSE.components.tags.removeTags = function (index, tagArray) {
-  var i = tagArray.length;
-
-  while (i--)
-    while (this.strings[index].indexOf(tagArray[i]) !== -1)
-      this.strings.splice(this.strings[index].indexOf(tagArray[i]), 1);
-};
-
-//TRANSFORM COMPONENT
-nJSE.components.transform = nJSE.components.base();
-nJSE.components.transform.onInit = function () {
-  this.scales = [];
-  this.rotations = [];
-  this.positions = [];
-  this.bufferScales = [];
-  this.bufferRotations = [];
-  this.bufferPositions = [];
-  this.heirarchyIndices = [];
-  this.factorScale = [];
-  this.factorRotation = [];
-  this.factorOffsets = [];
-  this.factorPositionOffset = [];
-  this.factorScaleOffset = [];
-  this.factorRotationOffset = [];
-};
-nJSE.components.transform.onCreate = function (id) {
-  let index = this.entityIDs.length - 1;
-
-  this.scales[index] = new Vector(1, 1);
-  this.rotations[index] = 0;
-  this.positions[index] = new Vector(0, 0);
-  this.bufferScales[index] = Vector.zero;
-  this.bufferRotations[index] = 0;
-  this.bufferPositions[index] = Vector.zero;
-  this.heirarchyIndices[index] = nJSE.components.heirarchy.indexOf(id, 1);
-
-  this.factorScale[index] = 1;
-  this.factorRotation[index] = 1;
-  this.factorOffsets[index] = 1;
-  this.factorPositionOffset[index] = 1;
-  this.factorScaleOffset[index] = 1;
-  this.factorRotationOffset[index] = 1;
-};
-nJSE.components.transform.onEarlyUpdate = function (deltaTime) {
-  nJSE.components.heirarchy.orderedIteration(this.heirarchyIndices, this.heirarchalFunction);
-
-  var i = this.entityIDs.length;
-
-  while (i--) {
-    this.bufferScales[i].setTo(0, 0);
-    this.bufferRotations[i] = 0;
-    this.bufferPositions[i].setTo(0, 0);
-  }
-};
-nJSE.components.transform.heirarchalFunction = function (index, parentID) {
-  if (parentID !== null) {
-    let parentIndex = this.indexOf(parentID);
-
-    if (parentIndex !== -1 && this.activeStates[parentIndex]) {
-      let vectorToThis = this.positions[index].minus(this.positions[parentIndex]);
-      
-      if (this.factorScale[index])
-        this.bufferScales[index].add(this.bufferScales[parentIndex]);
-
-      if (this.factorRotation)
-        this.bufferRotations[index] += this.bufferRotations[parentIndex];
-
-      if (this.factorOffsets[index]) {
-        if (this.factorPositionOffset[index])
-          this.bufferPositions[index].add(this.bufferPositions[parentIndex]);
-        
-        if (this.factorRotationOffset[index])
-          this.bufferPositions[index].add(vectorToThis.rotatedBy(this.bufferRotations[parentIndex]).subtract(vectorToThis));
-        
-        if (this.factorScaleOffset[index])
-          this.bufferPositions[index].add(vectorToThis.times(this.bufferScales[parentIndex].x, this.bufferScales[parentIndex].y));
-      }
-    }
-  }
-
-  this.scales[index].add(this.bufferScales[index]);
-  this.rotations[index] += this.bufferRotations[index];
-  this.positions[index].add(this.bufferPositions[index]);
-};

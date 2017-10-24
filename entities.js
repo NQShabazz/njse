@@ -19,8 +19,8 @@ nJSE.entities.default = function () {
   let id = nJSE.entities.entity();
 
   nJSE.components.sprite.create(id);
-  nJSE.components.collider.create(id);
-  nJSE.components.collider.setShape(nJSE.components.collider.entityIDs.length - 1, 35, 4, Math.PI / 4);
+//  nJSE.components.collider.create(id);
+//  nJSE.components.collider.setShape(nJSE.components.collider.entityIDs.length - 1, 35, 4, Math.PI / 4);
   nJSE.components.audio.create(id);
   
   let soundComponentIndex = nJSE.components.audio.entityIDs.length - 1;
