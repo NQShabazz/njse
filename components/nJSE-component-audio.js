@@ -45,7 +45,6 @@ nJSE.components.audio.setAudio = function(index, nodeIndex, numInstances, volume
 };
 nJSE.components.audio.playAudio = function(index, audioIndex, instanceIndex){
   if(instanceIndex !== undefined){
-    console.log(instanceIndex);
     this.audios[index][audioIndex][instanceIndex].play();
   }else{
     var i = this.audios[index][audioIndex].length - 1;
@@ -70,6 +69,7 @@ nJSE.components.audio.stopAudio = function(index, audioIndex, instanceIndex){
   if(instanceIndex !== undefined){
     this.audios[index][audioIndex][instanceIndex].pause();
     this.audios[index][audioIndex][instanceIndex].currentTime = 0;
+    this.audios[index][audioIndex][instanceIndex].load();
   }else{
     var i = this.audios[index][audioIndex].length;
 
@@ -83,6 +83,7 @@ nJSE.components.audio.stopAudio = function(index, audioIndex, instanceIndex){
 nJSE.components.audio.resetaudio = function(index, audioIndex, instanceIndex){
   if(instanceIndex !== undefined){
     this.audios[index][audioIndex][instanceIndex].currentTime = 0;
+    this.audios[index][audioIndex][instanceIndex].load();
   }else{
     var i = this.audios[index][audioIndex].length;
 
@@ -105,6 +106,7 @@ nJSE.components.audio.setVolume = function(volume, index, audioIndex, instanceIn
 nJSE.components.audio.setLoop = function(loop, index, audioIndex, instanceIndex){
   if(instanceIndex !== undefined){
     this.audios[index][audioIndex][instanceIndex].loop = loop;
+    this.audios[index][audioIndex][instanceIndex].load();
   }else{
     var i = this.audios[index][audioIndex].length;
 

@@ -26,7 +26,7 @@ nJSE.input = {
   mousePressedBuffer: [],
   mouseDown: [],
   //where the mouse is on the mouseTarget, with topleft being (0, 0)
-  mousePosition: Vector.zero,
+  mousePosition: [0, 0],
   //the target that mouse position will be based off of 
   mouseTarget: document,
   //when initialized, this will add hooks to capture mouse events
@@ -52,7 +52,7 @@ nJSE.input = {
 
     document.addEventListener("mousemove", (e) => {
       //setting mouse position relative to top-left of target
-      this.mousePosition.setTo(e.pageX - this.mouseTarget.offsetLeft, e.pageY - this.mouseTarget.offsetTop);
+      this.mousePosition = [e.pageX - this.mouseTarget.offsetLeft, e.pageY - this.mouseTarget.offsetTop];
     });
 
     //if the mouse is not already down, then the mouse was just pressed
@@ -81,6 +81,7 @@ nJSE.input = {
       if (this.keyDown[e.code] != 1) {
         this.keyPressed[e.code] = 1;
         this.keyPressedBuffer[e.code] = 1;
+        console.log(e.keyCode, e.charCode);
       }
       this.keyDown[e.code] = 1;
     });
@@ -92,7 +93,7 @@ nJSE.input = {
       this.keyDown[e.code] = 0;
     });
   },
-  //update just checks the pressedBuffers, the nsets then to 0
+  //update just checks the pressedBuffers, then sets them to 0
   //if the buffers are already 0, then it sets the actual pressed events to 0
   update: function () {
     for (let i in this.keys)

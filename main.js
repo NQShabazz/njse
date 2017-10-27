@@ -9,26 +9,19 @@ nJSE.main = {
     this.timeSpeed = 1;
     this.deltaTime = 0;
     
-    this.noParent = 1;
-    this.noParent0 = 1;
-    
     nJSE.input.init(document.getElementById("canvasContainer"));
 
     nJSE.renderer.init();
 
     nJSE.components.init();
     
-    this.initAudio();
     this.initSprites();
+    this.initAudio();
 
-    nJSE.entities.default();
-    nJSE.entities.default();
-    nJSE.entities.default();
-//    nJSE.entities.default();
-//    nJSE.components.audio.playAudio(nJSE.components.audio.indexOf(nJSE.entities.default()), 0);
-
-    nJSE.components.transform.dPos[1] = [nJSE.WIDTH * Math.random(), nJSE.HEIGHT * Math.random(), 0];
-    nJSE.components.transform.dPos[2] = [nJSE.WIDTH * Math.random(), nJSE.HEIGHT * Math.random(), 0];
+    nJSE.components.defaultEntity.create();
+    nJSE.components.audio.setAudio(0, 0, 1, 0.5, 1);
+    nJSE.components.audio.setAudio(0, 2, 8, 0.5, 0);
+    nJSE.components.audio.playAudio(0, 0);
 
     this.step();
   },
@@ -38,35 +31,10 @@ nJSE.main = {
     nJSE.input.update();
 
     //Quick test start
-    nJSE.components.transform.dPos[0] = [nJSE.input.mousePosition[0] - nJSE.components.transform.pos[0][0], nJSE.input.mousePosition[1] - nJSE.components.transform.pos[0][1], 0];
-    console.log(nJSE.components.transform.pos[0],nJSE.components.transform.dPos[0])
-
-    if (nJSE.input.mousePressed[1]) {
-      if (this.noParent) {
-        nJSE.components.heirarchy.parentByIndex(1, 0);
-        nJSE.components.collider.debugColor = "#ff0";
-        this.noParent = 0;
-      } else {
-        nJSE.components.heirarchy.unparentByIndex(1);
-        nJSE.components.collider.debugColor = "#0f0";
-        this.noParent = 1;
-      }
-    }
-
-    if (nJSE.input.keyPressed[nJSE.input.keys.boost]) {
-      if (this.noParent0) {
-        nJSE.components.heirarchy.parentByIndex(2, 1);
-        this.noParent0 = 0;
-      } else {
-        nJSE.components.heirarchy.unparentByIndex(2);
-        this.noParent0 = 1;
-      }
-    }
+    nJSE.components.transform.setPos(0, [nJSE.input.mousePosition[0], nJSE.input.mousePosition[1], 0]);
     
-//    if(nJSE.input.mousePressed[0] || nJSE.input.mousePressed[2]){
-//      nJSE.components.audio.playAudio(2, 1);
-//      nJSE.components.transform.bufferScales[0].add((Vector.one).scaleBy(0.2));
-//    }
+    if(nJSE.input.mousePressed[0] || nJSE.input.mousePressed[2])
+      nJSE.components.audio.playAudio(0, 1);
     
     if (nJSE.input.mouseDown[0])
       nJSE.components.transform.dRot[0] -= this.deltaTime * 5;

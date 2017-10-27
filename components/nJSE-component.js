@@ -12,10 +12,12 @@ nJSE.components.base = function () {
     entityIDs: [],
     activeStates: [],
     create: function (id) {
-      if (this.indexOf(id) === -1) {
-        this.entityIDs.push(id);
+      let eID = id ? id : +("" + Date.now() + ((Math.random() * 1000) | 0));
+      
+      if (this.indexOf(eID) === -1) {
+        this.entityIDs.push(eID);
         this.activeStates.push(1);
-        this.onCreate(id);
+        this.onCreate(eID);
       }
       
       return this.entityIDs.length;

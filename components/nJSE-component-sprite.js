@@ -16,7 +16,7 @@ nJSE.components.sprite.onInit = function () {
 nJSE.components.sprite.onCreate = function (id) {
   let index = this.entityIDs.length - 1;
 
-  this.images[index] = index === 0 ? [this.imageCanvases[2],this.imageCanvases[1]] : [this.imageCanvases[2]];
+  this.images[index] = [this.imageCanvases[1]];
   this.frames[index] = 0;
   this.layers[index] = this.defaultLayer;
   this.speeds[index] = 1; // FPS
