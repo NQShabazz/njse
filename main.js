@@ -46,8 +46,6 @@ nJSE.main = {
     if (nJSE.input.keyDown[nJSE.input.keys.up])
       nJSE.components.transform.dScl[0] = [nJSE.components.transform.dScl[0][0] + 5*this.deltaTime, nJSE.components.transform.dScl[0][1] + 5*this.deltaTime];
 
-    //nJSE.components.transform.bufferRotations[1] += this.deltaTime * 2.5;
-
     nJSE.components.update(this.deltaTime);
 
     nJSE.renderer.update(this.deltaTime);

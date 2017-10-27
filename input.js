@@ -81,7 +81,6 @@ nJSE.input = {
       if (this.keyDown[e.code] != 1) {
         this.keyPressed[e.code] = 1;
         this.keyPressedBuffer[e.code] = 1;
-        console.log(e.keyCode, e.charCode);
       }
       this.keyDown[e.code] = 1;
     });
