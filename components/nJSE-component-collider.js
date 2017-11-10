@@ -116,6 +116,7 @@ nJSE.components.collider.onUpdate = function (deltaTime) {
       }
       
       if(collisionDetected && (this.colliderDepthsAndRadii[i][0] || this.colliderDepthsAndRadii[j][0])){
+        let iRotation = nJSE.components.transform.rot[this.transformIndices[i]], jRotation = nJSE.components.transform.rot[this.transformIndices[j]];
         //do in-depth collision test (something more precise that gives collision depth)...
         //this.collisions1[i].push([this.entityIDs[j], angle, collisionDepth])
         //this.collisions1[j].push([this.entityIDs[i], angle, collisionDepth])
