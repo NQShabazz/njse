@@ -55,6 +55,8 @@ nJSE.renderer = {
     canvas.id = id;
     canvas.width = nJSE.WIDTH;
     canvas.height = nJSE.HEIGHT;
+    canvas.style.width = nJSE.WIDTH;
+    canvas.style.height = nJSE.HEIGHT;
     canvas.style.zIndex = index;
 
     if (addToBody) {
@@ -102,6 +104,30 @@ nJSE.renderer = {
 
         this.contexts[index].setTransform(1, 0, 0, 1, 0, 0);
         this.contexts[index].clearRect(0, 0, nJSE.WIDTH, nJSE.HEIGHT);
+      }
+    }
+  },
+  setResolution: function(x, y, notDefault){
+    let cC = document.getElementById("canvasContainer");
+    var i = this.canvases.length;
+    
+    cC.style.width = x+"px";
+    cC.style.height = y+"px";
+    
+    nJSE.WIDTH = x;
+    nJSE.HEIGHT = y;
+    
+    if(!notDefault){
+      nJSE.defaultWidth = x;
+      nJSE.defaultHeight = y;
+    }
+
+    while (i--) {
+      if(this.canvases[i]){
+        this.canvases[i].width = x;
+        this.canvases[i].height = y;
+        this.canvases[i].style.width = x+"px";
+        this.canvases[i].style.height = y+"px";
       }
     }
   }

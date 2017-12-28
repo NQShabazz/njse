@@ -9,7 +9,7 @@ nJSE.components.collider.onInit = function () {
   this.twoPI = Math.PI * 2;
   this.r2o2 = Math.sqrt(2) * 0.5;
   
-  this.colliderPoints = [];
+  this.colliderVertices = [];
   this.colliderPDescs = [];
   this.colliderDepthsAndRadii = [];
   this.collidingAsCircle = [];
@@ -23,7 +23,7 @@ nJSE.components.collider.onCreate = function (id) {
   let index = this.entityIDs.length - 1;
 
   // x, y of each point
-  this.colliderPoints[index] = [[0, 0]];
+  this.colliderVertices[index] = [[0, 0]];
   // length squared, angle of each point
   this.colliderPDescs[index] = [[1, 0]];
   // how far to check for collision (circle vs. precise), maximum radius
@@ -42,7 +42,7 @@ nJSE.components.collider.setCollisionAsCircle = function (index, isCircle) {
   this.collidingAsCircle[index] = isC;
 };
 nJSE.components.collider.setShape = function (index, radius, numSides, angleOffset) {
-  this.colliderPoints[index] = new Array(numSides);
+  this.colliderVertices[index] = new Array(numSides);
   this.colliderPDescs[index] = new Array(numSides);
 
   var i = numSides;
@@ -50,14 +50,14 @@ nJSE.components.collider.setShape = function (index, radius, numSides, angleOffs
   while (i--) {
     let angle = this.twoPI * i / numSides;
 
-    this.colliderPoints[index][i] = [radius * Math.cos(angleOffset + this.twoPI * i / numSides), radius * Math.sin(angleOffset + this.twoPI * i / numSides)];
+    this.colliderVertices[index][i] = [radius * Math.cos(angleOffset + this.twoPI * i / numSides), radius * Math.sin(angleOffset + this.twoPI * i / numSides)];
     this.colliderPDescs[index][i] = [radius * radius, angleOffset + angle];
   }
 
   this.colliderDepthsAndRadii[index][1] = (radius);
 };
 nJSE.components.collider.setPoints = function (index, pointArray) {
-  this.colliderPoints[index] = pointArray;
+  this.colliderVertices[index] = pointArray;
   this.colliderPDescs[index] = new Array(pointArray.length);
 
   let maxRadius = this.lengthSquared(pointArray[i]);
@@ -93,7 +93,7 @@ nJSE.components.collider.onUpdate = function (deltaTime) {
       continue;
     
     let iPosition = nJSE.components.transform.pos[this.transformIndices[i]];
-    let iRotation = nJSE.components.transform.rot[this.transformIndices[i]];
+    let iRotation = this.colliderDepthsAndRadii[i][0] ? nJSE.components.transform.rot[this.transformIndices[i]] : 0;
     var j = i;
 
     while (j-- > 0) {
@@ -115,12 +115,25 @@ nJSE.components.collider.onUpdate = function (deltaTime) {
         collisionDetected = true;
       }
       
-      if(collisionDetected && (this.colliderDepthsAndRadii[i][0] || this.colliderDepthsAndRadii[j][0])){
-        let iRotation = nJSE.components.transform.rot[this.transformIndices[i]], jRotation = nJSE.components.transform.rot[this.transformIndices[j]];
+      /*if(collisionDetected && (this.colliderDepthsAndRadii[i][0] || this.colliderDepthsAndRadii[j][0])){
+        let jRotation = nJSE.components.transform.rot[this.transformIndices[j]], closestVertexIndex = 0, closestDist = this.lengthSquared(this.subtract(this.add(jPosition, this.rotate(this.colliderVertices[j][0], jRotation)), iPosition))
+        
+        var jj = this.colliderVertices[j].length;
+        
+        while(jj--){
+          let dist = this.lengthSquared(this.subtract(this.add(jPosition, this.rotate(this.colliderVertices[j][jj], jRotation)), iPosition));
+          
+          if(dist < closestDist){
+            closestDist = dist;
+            closestVertexIndex = jj;
+          }
+        }
+        
+        this.collisionPoints[j].push(closestVertexIndex);
         //do in-depth collision test (something more precise that gives collision depth)...
         //this.collisions1[i].push([this.entityIDs[j], angle, collisionDepth])
         //this.collisions1[j].push([this.entityIDs[i], angle, collisionDepth])
-      }
+      }*/
     }
   }
 };
@@ -133,9 +146,9 @@ nJSE.components.collider.onDraw = function () {
     while (i--) {
       let trns = nJSE.components.transform.matrix[this.transformIndices[i]];
       
-      var j = this.colliderPoints[i].length;
+      var j = this.colliderVertices[i].length;
 
-      let endPoint = this.colliderPoints[i][j - 1];
+      let endPoint = this.colliderVertices[i][j - 1];
 
       this.debugCanvasCtx.setTransform(trns[0], trns[3], trns[1], trns[4], trns[2], trns[5]);
 
@@ -146,9 +159,17 @@ nJSE.components.collider.onDraw = function () {
       this.debugCanvasCtx.moveTo(0, 0);
 
       while (j--)
-        this.debugCanvasCtx.lineTo(this.colliderPoints[i][j][0], this.colliderPoints[i][j][1]);
+        this.debugCanvasCtx.lineTo(this.colliderVertices[i][j][0], this.colliderVertices[i][j][1]);
       
       this.debugCanvasCtx.lineTo(endPoint[0], endPoint[1]);
+      
+      this.debugCanvasCtx.stroke();
+      
+      j = this.collisionPoints[i].length;
+      
+      while(j--)
+        this.debugCanvasCtx.arc(this.colliderVertices[i][this.collisionPoints[j]][0], this.colliderVertices[i][this.collisionPoints[j]][1], 5, 0, this.twoPI);
+      
       this.debugCanvasCtx.stroke();
     }
   }
@@ -156,9 +177,20 @@ nJSE.components.collider.onDraw = function () {
 nJSE.components.collider.lengthSquared = function(v){
   return v[0] * v[0] + v[1] * v[1];
 };
-//subtracts vector y from vector x, as in (x - y)
-nJSE.components.collider.subtract = function(x, y){
-  return [x[0] - y[0], x[1] - y[1]];
+//adds vector v1 from vector v0, as in (v0 + v1)
+nJSE.components.collider.add = function(v0, v1){
+  return [v0[0] + v1[0], v0[1] + v1[1]];
+}
+//subtracts vector v1 from vector v0, as in (v0 - v1)
+nJSE.components.collider.subtract = function(v0, v1){
+  return [v0[0] - v1[0], v0[1] - v1[1]];
+}
+//subtracts vector v1 from vector v0, as in (v0 - v1)
+nJSE.components.collider.rotate = function(v, theta){
+  if(theta === 0)
+    return v;
+  
+  return [Math.cos(theta)*v[0] - Math.sin(theta)*v[1], Math.sin(theta)*v[0] + Math.cos(theta)*v[1]];
 }
 //gets angle of vector
 nJSE.components.collider.angle = function(v){

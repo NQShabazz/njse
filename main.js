@@ -3,6 +3,11 @@
 //Nazaire's JavaScript Engine
 var nJSE = nJSE || {};
 
+nJSE.defaultWidth = 800;
+nJSE.defaultHeight = 600;
+nJSE.WIDTH = nJSE.defaultWidth;
+nJSE.HEIGHT = nJSE.defaultHeight;
+
 nJSE.main = {
   init: function () {
     this.timeStamp = Date.now();
@@ -12,6 +17,7 @@ nJSE.main = {
     nJSE.input.init(document.getElementById("canvasContainer"));
 
     nJSE.renderer.init();
+    nJSE.renderer.setResolution(800, 600);
 
     nJSE.components.init();
     
@@ -23,6 +29,11 @@ nJSE.main = {
     nJSE.components.audio.setAudio(0, 2, 8, 0.5, 0);
     nJSE.components.audio.playAudio(0, 0);
 
+    nJSE.components.defaultEntity.create();
+    nJSE.components.transform.setPos(1, [400, 300, 0]);
+    
+    this.makeWalls();
+    
     this.step();
   },
   step: function () {
@@ -82,6 +93,21 @@ nJSE.main = {
     nCA.addAudio(prefix + "explosion.wav");
     nCA.addAudio(prefix + "shot.wav");
     nCA.addAudio(prefix + "charge.wav");
+  },
+  makeWalls: function(){
+    var i = 2;
+    
+    while(i < 20){
+      nJSE.components.wallEntity.create();
+      nJSE.components.transform.setPos(i, [50 * i - 100, 450, 0]);
+      i++;
+    }
+    
+    while(i < 40){
+      nJSE.components.wallEntity.create();
+      nJSE.components.transform.setPos(i, [650, i*50 - 1000, 0]);
+      i++;
+    }
   }
 };
 

@@ -91,6 +91,20 @@ nJSE.input = {
       this.keyPressedBuffer[e.code] = 0;
       this.keyDown[e.code] = 0;
     });
+
+    //event listeners for fullscreen
+    document.addEventListener('webkitfullscreenchange', function (e) {onFullScreenChange();}, false);
+    document.addEventListener('mozfullscreenchange', function (e) {onFullScreenChange();}, false);
+    document.addEventListener('fullscreenchange', function (e) {onFullScreenChange();}, false);
+    window.addEventListener('resize', function(e){
+      if(screen.height === window.innerHeight && screen.width === window.innerWidth){
+        nJSE.renderer.setResolution(screen.width, screen.height, 1);
+        document.getElementById("canvasContainer").style.marginTop = 0;
+      }else{
+        nJSE.renderer.setResolution(nJSE.defaultWidth, nJSE.defaultHeight);
+        document.getElementById("canvasContainer").style.marginTop = "50px";
+      }
+    });
   },
   //update just checks the pressedBuffers, then sets them to 0
   //if the buffers are already 0, then it sets the actual pressed events to 0
@@ -116,3 +130,13 @@ nJSE.input = {
       }
   }
 };
+function onFullScreenChange() {
+  console.log("pls");
+  if (!window.screenTop && !window.screenY) {
+    nJSE.renderer.setResolution(nJSE.defaultWidth, nJSE.defaultHeight);
+    document.getElementById("canvasContainer").style.marginTop = "50px";
+  } else {
+    nJSE.renderer.setResolution(screen.width, screen.height, 1);
+    document.getElementById("canvasContainer").style.marginTop = 0;
+  }
+}

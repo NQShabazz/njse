@@ -24,7 +24,7 @@ nJSE.components.transform.onInit = function () {
   this.matrix = [];
 
   this.heirarchyIndices = [];
-  
+
   this.twoPI = Math.PI * 2;
 };
 nJSE.components.transform.onCreate = function (id) {
@@ -80,8 +80,8 @@ nJSE.components.transform.heirarchalFunction = function (index, parentID) {
     this.dRot[index] += pDRot;
     this.dScl[index] = [cDScl[0] + pDScl[0], cDScl[1] + pDScl[1], cDScl[2] + pDScl[2]];
 
-    this.pos[index] = [(this.dPos[index][0] + this.pos[index][0])|0, (this.dPos[index][1] + this.pos[index][1])|0, (this.dPos[index][2] + this.pos[index][2])|0];
-    this.rot[index] = (this.rot[index] + this.dRot[index])%this.twoPI;
+    this.pos[index] = [(this.dPos[index][0] + this.pos[index][0]) | 0, (this.dPos[index][1] + this.pos[index][1]) | 0, (this.dPos[index][2] + this.pos[index][2]) | 0];
+    this.rot[index] = (this.rot[index] + this.dRot[index]) % this.twoPI;
     this.scl[index] = [this.dScl[index][0] + this.scl[index][0], this.dScl[index][1] + this.scl[index][1], this.dScl[index][2] + this.scl[index][2]];
 
     this.matrix[index] = this.getMatrix(index);
@@ -109,47 +109,49 @@ nJSE.components.transform.mulMatrices = function (matrices) {
 
   return m;
 };
-nJSE.components.transform.translate = function(index, x, y, z){
-  if(y !== undefined)
+nJSE.components.transform.translate = function (index, x, y, z) {
+  if (y !== undefined)
     this.dPos[index] = [this.dPos[index][0] + x, this.dPos[index][1] + y, this.dPos[index][2] + (z !== undefined ? z : 0)];
   else
     this.dPos[index] = [this.dPos[index][0] + x[0], this.dPos[index][1] + x[1], this.dPos[index][2] + x[2]];
-  
+
   this.old[index] = 1;
 };
-nJSE.components.transform.setPos = function(index, x, y, z){
-  if(y !== undefined)
+nJSE.components.transform.setPos = function (index, x, y, z) {
+  if (y !== undefined)
     this.dPos[index] = [this.dPos[index][0] + (x - this.pos[index][0]),
                         this.dPos[index][1] + (y - this.pos[index][1]),
                         this.dPos[index][1] + ((z !== undefined ? z : 0) - this.pos[index][2])];
   else
-    this.dPos[index] = [this.dPos[index][0] + (x[0] - this.pos[index][0]), this.dPos[index][1] + (x[1] - this.pos[index][1]), this.dPos[index][2] + (x[2] - this.pos[index][2])];
-  
+    this.dPos[index] = [this.dPos[index][0] + (x[0] - this.pos[index][0]),
+                        this.dPos[index][1] + (x[1] - this.pos[index][1]),
+                        this.dPos[index][2] + (x[2] - this.pos[index][2])];
+
   this.old[index] = 1;
 };
-nJSE.components.transform.rotate = function(index, rads){
+nJSE.components.transform.rotate = function (index, rads) {
   this.dRot[index] += rads;
-  
+
   this.old[index] = 1;
 };
-nJSE.components.transform.setRot = function(index, rads){
+nJSE.components.transform.setRot = function (index, rads) {
   this.dRot[index] += rads - this.rot[index];
-  
+
   this.old[index] = 1;
 };
-nJSE.components.transform.scale = function(index, x, y, z){
-  if(y !== undefined)
+nJSE.components.transform.scale = function (index, x, y, z) {
+  if (y !== undefined)
     this.dScl[index] = [this.dScl[index][0] + x, this.dScl[index][1] + y, this.dScl[index][2] + (z !== undefined ? z : 0)];
   else
     this.dScl[index] = [this.dScl[index][0] + x[0], this.dScl[index][1] + x[1], this.dScl[index][2] + x[2]];
-  
+
   this.old[index] = 1;
 };
-nJSE.components.transform.setScale = function(index, x, y){
-  if(y !== undefined)
+nJSE.components.transform.setScale = function (index, x, y) {
+  if (y !== undefined)
     this.dScl[index] = [this.dScl[index][0] + (x - this.scl[index][0]), this.dScl[index][1] + (y - this.scl[index][1]), this.dScl[index][1] + ((z !== undefined ? z : 1) - this.scl[index][2])];
   else
     this.dScl[index] = [this.dScl[index][0] + (x[0] - this.scl[index][0]), this.dScl[index][1] + (x[1] - this.scl[index][1])];
-  
+
   this.old[index] = 1;
 };
