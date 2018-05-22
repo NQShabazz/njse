@@ -5,6 +5,7 @@ var nJSE = nJSE || {};
 
 //keeps track of relevant key states and mouse states
 nJSE.input = {
+  userInteracted: 0,
   // daemon of the keys we'll be using
   keys: Object.freeze({
     boost: 'Space',
@@ -62,6 +63,9 @@ nJSE.input = {
         this.mousePressedBuffer[e.button] = 1;
       }
       this.mouseDown[e.button] = 1;
+      
+      if(!this.userInteracted)
+        this.userInteracted=1;
     });
 
     //the mouse was released, everything about it is 0 0_0
@@ -69,6 +73,9 @@ nJSE.input = {
       this.mousePressed[e.button] = 0;
       this.mousePressedBuffer[e.button] = 0;
       this.mouseDown[e.button] = 0;
+      
+      if(!this.userInteracted)
+        this.userInteracted=1;
     });
 
     //this will keep the right click menu from popping up
@@ -83,6 +90,9 @@ nJSE.input = {
         this.keyPressedBuffer[e.code] = 1;
       }
       this.keyDown[e.code] = 1;
+      
+      if(!this.userInteracted)
+        this.userInteracted=1;
     });
 
     //similar to mouseevent code:
@@ -90,6 +100,9 @@ nJSE.input = {
       this.keyPressed[e.code] = 0;
       this.keyPressedBuffer[e.code] = 0;
       this.keyDown[e.code] = 0;
+      
+      if(!this.userInteracted)
+        this.userInteracted=1;
     });
 
     //event listeners for fullscreen

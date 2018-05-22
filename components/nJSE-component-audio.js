@@ -44,15 +44,17 @@ nJSE.components.audio.setAudio = function(index, nodeIndex, numInstances, volume
   return len;
 };
 nJSE.components.audio.playAudio = function(index, audioIndex, instanceIndex){
-  if(instanceIndex !== undefined){
-    this.audios[index][audioIndex][instanceIndex].play();
-  }else{
-    var i = this.audios[index][audioIndex].length - 1;
+  if(nJSE.input.userInteracted){
+    if(instanceIndex !== undefined){
+      this.audios[index][audioIndex][instanceIndex].play();
+    }else{
+      var i = this.audios[index][audioIndex].length - 1;
 
-    while(i > 0 && !this.audios[index][audioIndex][i].paused)
-      i--;
+      while(i > 0 && !this.audios[index][audioIndex][i].paused)
+        i--;
 
-    this.audios[index][audioIndex][i].play();
+      this.audios[index][audioIndex][i].play();
+    }
   }
 };
 nJSE.components.audio.pauseAudio = function(index, audioIndex, instanceIndex){

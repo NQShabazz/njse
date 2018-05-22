@@ -118,6 +118,12 @@ nJSE.components.transform.translate = function (index, x, y, z) {
   this.old[index] = 1;
 };
 nJSE.components.transform.setPos = function (index, x, y, z) {
+//  if(this.dPos[index] === undefined)
+//    this.dPos[index] = [0, 0, 0];
+//  
+//  if(this.pos[index] === undefined)
+//    this.pos[index] = [0, 0, 0];
+  
   if (y !== undefined)
     this.dPos[index] = [this.dPos[index][0] + (x - this.pos[index][0]),
                         this.dPos[index][1] + (y - this.pos[index][1]),

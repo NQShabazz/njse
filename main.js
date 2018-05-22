@@ -13,7 +13,6 @@ nJSE.main = {
     this.timeStamp = Date.now();
     this.timeSpeed = 1;
     this.deltaTime = 0;
-    
     nJSE.input.init(document.getElementById("canvasContainer"));
 
     nJSE.renderer.init();

@@ -1,21 +1,21 @@
 'use strict';
 
 //TAG COMPONENT
-nJSE.components.tags = nJSE.components.base();
-nJSE.components.tags.onInit = function (id) {
+nJSE.components.tag = nJSE.components.base();
+nJSE.components.tag.onInit = function (id) {
   this.strings = [];
 };
-nJSE.components.tags.onCreate = function (id) {
+nJSE.components.tag.onCreate = function (id) {
   this.strings[this.strings.length] = [];
 };
-nJSE.components.tags.addTags = function (index, tagArray) {
+nJSE.components.tag.addTags = function (index, tagArray) {
   let length = this.strings[index].length;
   var i = tagArray.length
 
   while (i--)
     this.strings[index][length + i] = tagArray[i];
 };
-nJSE.components.tags.removeTags = function (index, tagArray) {
+nJSE.components.tag.removeTags = function (index, tagArray) {
   var i = tagArray.length;
 
   while (i--)

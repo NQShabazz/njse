@@ -3,22 +3,25 @@
 //Nazaire's JavaScript Engine
 var nJSE = nJSE || {};
 
+nJSE.eIDIndex = 0;
+
 nJSE.components = {};
 
 nJSE.components.array = [];
 
 nJSE.components.base = function () {
   let component = {
+    eIDIndex: 0,
     entityIDs: [],
     activeStates: [],
     create: function (id) {
-      let eID = id ? id : +("" + Date.now() + ((Math.random() * 1000) | 0));
+      let eID = id ? id : +("" + Date.now() + nJSE.eIDIndex);
       
-      if (this.indexOf(eID) === -1) {
-        this.entityIDs.push(eID);
-        this.activeStates.push(1);
-        this.onCreate(eID);
-      }
+      nJSE.eIDIndex++;
+
+      this.entityIDs.push(eID);
+      this.activeStates.push(1);
+      this.onCreate(eID);
       
       return this.entityIDs.length;
     },
@@ -84,8 +87,11 @@ nJSE.components.update = function (deltaTime) {
   while (j--)
     this.array[j].onUpdate(deltaTime);
 
-  while (k--)
+  while (k--){
     this.array[k].onLateUpdate(deltaTime);
+  }
+  
+  nJSE.eIDIndex = 0;
 };
 
 nJSE.components.draw = function () {
