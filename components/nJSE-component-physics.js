@@ -3,12 +3,12 @@
 //physics COMPONENT
 nJSE.components.physics = nJSE.components.base();
 nJSE.components.physics.onInit = function () {
-  this.pi1Over4 = Math.PI * 0.25;
-  this.pi3Over4 = Math.PI * 0.75;
-  this.pi5Over4 = Math.PI * 1.25;
-  this.pi7Over4 = Math.PI * 1.75;
+  this.pi1O4 = Math.PI * 0.25;
+  this.pi3O4 = Math.PI * 0.75;
+  this.pi5O4 = Math.PI * 1.25;
+  this.pi7O4 = Math.PI * 1.75;
   
-  this.gravity = [0.01, 0.005];
+  this.gravity = [0, 1];
   
   this.kin = [];
   this.accel = [];
@@ -41,23 +41,40 @@ nJSE.components.physics.onUpdate = function (deltaTime) {
       var j = collisions.length;
       
       while(j--){
-        let cIndex = this.indexOf(collisions[j][0]), angle = collisions[j][1];
+        let cIndex = this.indexOf(collisions[j][0]), angle = collisions[j][1], depth = collisions[j][2];
 
         if(cIndex > -1){
-          if(angle > this.pi1Over4 && angle < this.pi3Over4)
-            this.vel[i] = [this.vel[i][0], Math.min(0, this.vel[i][1])];
-          else if(angle > this.pi3Over4 && angle < this.pi5Over4)
-            this.vel[i] = [Math.max(0, this.vel[i][0]), this.vel[i][1]];
-          else if(angle > this.pi5Over4 && angle < this.pi7Over4)
-            this.vel[i] = [this.vel[i][0], Math.max(0, this.vel[i][1])];
-          else
-            this.vel[i] = [Math.min(0, this.vel[i][0]), this.vel[i][1]];
+          
+          //the circle goes from -PI to +PI...
+          //the top half is negative, bottom half positive
+          //0 is at the rightmost point, and +/-PI is at the leftmost point
+          
+          //if the velocity is 0, make it not 0 randomly
+          //now whatever the velocity is, normalize it, invert it, then scale it by depth
+          //  if both objects are kinematic, scale the new velocity by (old velocity over total velocity)
+          //now translate this object 
+          if(this.kin[cIndex]){
+            this.vel[i][0] += this.vel[cIndex][0];
+            this.vel[i][1] += this.vel[cIndex][1];
+            
+            nJSE.components.transform.translate(this.transformIndices[i], [this.vel[i][0], this.vel[i][1]])
+          }else{
+            if(angle < -this.pi1O4 && angle > -this.pi3O4){
+              this.vel[i] = [this.vel[i][0], Math.max(0, this.vel[i][1])];
+            }else if(angle > this.pi1O4 && angle < this.pi3O4){
+              this.vel[i] = [this.vel[i][0], Math.min(0, this.vel[i][1])];
+            }else if(angle < -this.pi3O4 || angle > this.pi3O4){
+              this.vel[i] = [Math.max(0, this.vel[i][0]), this.vel[i][1]];
+            }else if(angle > -this.pi1O4 && angle < this.pi1O4){
+              this.vel[i] = [Math.min(0, this.vel[i][0]), this.vel[i][1]];
+            }
+          }
         }
       }
-
-      nJSE.components.transform.translate(this.transformIndices[i], this.vel[i]);
       
       this.accel[i] = this.gravity;
     }
+
+    nJSE.components.transform.translate(this.transformIndices[i], [this.vel[i][0], this.vel[i][1]]);
   }
 };

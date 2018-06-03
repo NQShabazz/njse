@@ -44,7 +44,7 @@ nJSE.components.transform.onCreate = function (id) {
 
   this.heirarchyIndices[index] = nJSE.components.heirarchy.indexOf(id, 1);
 };
-nJSE.components.transform.onEarlyUpdate = function (deltaTime) {
+nJSE.components.transform.onLateUpdate = function (deltaTime) {
   var i = this.entityIDs.length;
 
   nJSE.components.heirarchy.orderedIteration(this.heirarchyIndices, this.heirarchalFunction);

@@ -6,6 +6,7 @@ nJSE.components.collider.onInit = function () {
   this.debugColor = "#0f0";
   this.debugCanvasCtx = nJSE.renderer.createCanvas("colliderDebugCanvas", 90).getContext("2d");
   this.drawDebug = 1;
+  
   this.twoPI = Math.PI * 2;
   this.r2o2 = Math.sqrt(2) * 0.5;
   
@@ -104,15 +105,17 @@ nJSE.components.collider.onUpdate = function (deltaTime) {
           iRect = [iPosition[0] - iRadius * iScale[0] * this.r2o2, iPosition[1] - iRadius * iScale[1] * this.r2o2, 2 * iRadius * iScale[0] * this.r2o2, 2 * iRadius * iScale[1] * this.r2o2],
           jRect = [jPosition[0] - jRadius * jScale[0] * this.r2o2, jPosition[1] - jRadius * jScale[1] * this.r2o2, 2 * jRadius * jScale[0] * this.r2o2, 2 * jRadius * jScale[1] * this.r2o2],
           distSquared = this.lengthSquared(this.subtract(jPosition, iPosition)),
-          collisionDetected = false;
+          collisionDetected = 0;
       
-      if ((this.collidingAsCircle[i] && this.collidingAsCircle[j] && distSquared < Math.pow(iRadius * Math.max(iScale[0], iScale[1]) + jRadius * Math.max(jScale[0], jScale[1]), 2)) || ((!(this.collidingAsCircle[i] && this.collidingAsCircle[j])) && iRect[0] < jRect[0] + jRect[2] && iRect[0] + iRect[2] > jRect[0] && iRect[1] < jRect[1] + jRect[3] && iRect[3] + iRect[1] > jRect[1])){
-        let angle = this.angle(this.subtract(jPosition, iPosition));
+      if ((this.collidingAsCircle[i] && this.collidingAsCircle[j] && distSquared < Math.pow(iRadius * Math.max(iScale[0], iScale[1]) + jRadius * Math.max(jScale[0], jScale[1]), 2)) || (!(this.collidingAsCircle[i] && this.collidingAsCircle[j]) && iRect[0] < jRect[0] + jRect[2] && iRect[0] + iRect[2] > jRect[0] && iRect[1] < jRect[1] + jRect[3] && iRect[1] + iRect[3] > jRect[1])){
+        let angle = this.angle(this.subtract(jPosition, iPosition)), depth = 0;
         
-        this.collisions0[i].push([this.entityIDs[j], angle]);
-        this.collisions0[j].push([this.entityIDs[i], (angle + Math.PI)%(this.twoPI)]);
+        //depth = [Math.max(Math.abs(iRect[0] + iRect[2] - jRect[0]), Math.abs(iRect[1] + iRect[3] - jRect[1]));
         
-        collisionDetected = true;
+        this.collisions0[i].push([this.entityIDs[j], angle, depth]);
+        this.collisions0[j].push([this.entityIDs[i], (angle + Math.PI)%(this.twoPI), depth]);
+        
+        collisionDetected = 1;
       }
       
       /*if(collisionDetected && (this.colliderDepthsAndRadii[i][0] || this.colliderDepthsAndRadii[j][0])){
@@ -152,7 +155,7 @@ nJSE.components.collider.onDraw = function () {
 
       this.debugCanvasCtx.setTransform(trns[0], trns[3], trns[1], trns[4], trns[2], trns[5]);
 
-      this.debugCanvasCtx.strokeStyle = this.collisions0[i].length > 0 ? "red" : this.debugColor;
+      this.debugCanvasCtx.strokeStyle = this.collisions0[i].length > 0 ? this.debugColor : this.debugColor;
 
       this.debugCanvasCtx.beginPath();
 

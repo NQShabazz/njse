@@ -27,6 +27,7 @@ nJSE.main = {
     nJSE.components.audio.setAudio(0, 0, 1, 0.5, 1);
     nJSE.components.audio.setAudio(0, 2, 8, 0.5, 0);
     nJSE.components.audio.playAudio(0, 0);
+    nJSE.components.physics.kin[0] = 0;
 
     nJSE.components.defaultEntity.create();
     nJSE.components.transform.setPos(1, [400, 300, 0]);
@@ -41,7 +42,7 @@ nJSE.main = {
     nJSE.input.update();
 
     //Quick test start
-    nJSE.components.transform.setPos(0, [nJSE.input.mousePosition[0], nJSE.input.mousePosition[1], 0]);
+    nJSE.components.physics.vel[0] = [nJSE.input.mousePosition[0] - nJSE.components.transform.pos[0][0], nJSE.input.mousePosition[1] - nJSE.components.transform.pos[0][1]];
     
     if(nJSE.input.mousePressed[0] || nJSE.input.mousePressed[2])
       nJSE.components.audio.playAudio(0, 1);
